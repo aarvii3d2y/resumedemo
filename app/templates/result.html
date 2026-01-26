@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/" class="btn btn-outline-secondary">&larr; Upload Another</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+        <h2 class="card-title fw-bold mb-3">Analysis Result</h2>
+        <h5 class="text-muted">{{ filename }}</h5>
+
+        <div class="row mt-5">
+            <!-- Semantic Score (GenAI) -->
+            <div class="col-md-6 border-end">
+                <div class="display-1 fw-bold text-primary">{{ result.semantic_score }}/100</div>
+                <p class="text-muted fw-bold">🤖 GenAI Semantic Score</p>
+                <p class="small text-muted">Based on context & meaning</p>
+
+                <div class="progress mx-auto" style="height: 10px; width: 80%;">
+                    <div class="progress-bar {% if result.semantic_score > 70 %}bg-success{% elif result.semantic_score > 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                        role="progressbar" style="width: {{ result.semantic_score }}%;"
+                        aria-valuenow="{{ result.semantic_score }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keyword Score (TF-IDF) -->
+            <div class="col-md-6">
+                <div class="display-1 fw-bold text-info">{{ result.keyword_score }}/100</div>
+                <p class="text-muted fw-bold">📊 ML Keyword Score</p>
+                <p class="small text-muted">Based on statistical word matching</p>
+
+                <div class="progress mx-auto" style="height: 10px; width: 80%;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ result.keyword_score }}%;"
+                        aria-valuenow="{{ result.keyword_score }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card h-100 shadow-sm border-0 bg-light">
+            <div class="card-body">
+                <h4 class="card-title fw-bold">Summary</h4>
+                <p class="card-text">{{ result.summary }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title fw-bold text-danger">Missing Keywords</h4>
+                {% if result.missing_keywords %}
+                <ul class="list-group list-group-flush">
+                    {% for keyword in result.missing_keywords %}
+                    <li class="list-group-item">⚠️ {{ keyword }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-success">No major keywords missing!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
