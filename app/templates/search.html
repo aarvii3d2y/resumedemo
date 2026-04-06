@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-6 fw-bold">Resume Search Engine</h1>
+    <p class="text-muted">Find the top candidates from the dataset using ML.</p>
+</div>
+
+<form action="/search" method="post" enctype="multipart/form-data" class="mb-5">
+    <div class="mb-3">
+        <label for="csvFile" class="form-label">Upload Custom Dataset (CSV) - <i>Optional</i></label>
+        <input class="form-control" type="file" id="csvFile" name="csv_file" accept=".csv">
+    </div>
+    <div class="input-group input-group-lg">
+        <textarea class="form-control" name="job_description" rows="3"
+            placeholder="Paste Job Description (e.g., 'Looking for a Python Data Scientist with SQL skills')..."
+            required></textarea>
+        <button class="btn btn-primary" type="submit">Search Candidates</button>
+    </div>
+</form>
+
+{% if results %}
+<h3 class="fw-bold mb-3">Top 10 Candidates</h3>
+<div class="list-group">
+    {% for candidate in results %}
+    <div class="list-group-item list-group-item-action flex-column align-items-start border-0 shadow-sm mb-2 rounded">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 text-primary fw-bold">
+                {{ candidate.Name or candidate.Category or "Candidate" }}
+                {% if candidate.get('Job Role') %}
+                <span class="text-muted small">({{ candidate['Job Role'] }})</span>
+                {% endif %}
+            </h5>
+            <span class="badge bg-success rounded-pill">{{ candidate.score }}% Match</span>
+        </div>
+        <p class="mb-1 text-muted small text-truncate" style="max-width: 90%;">
+            {{ candidate.Skills or candidate.Resume or "" }}
+        </p>
+        {% if candidate.get('Degree') or candidate.get('Education') %}
+        <small class="text-secondary">🎓 {{ candidate.Degree or candidate.Education }}</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

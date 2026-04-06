@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-6 fw-bold">Resume Screening</h1>
+    <p class="text-muted">Upload a resume and job description to get an AI-powered match score.</p>
+</div>
+
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="/analyze" method="post" enctype="multipart/form-data">
+    <div class="mb-4">
+        <label for="jobDescription" class="form-label fw-bold">Job Description</label>
+        <textarea class="form-control" id="jobDescription" name="job_description" rows="5"
+            placeholder="Paste the job description here..." required></textarea>
+    </div>
+
+    <div class="mb-4">
+        <label for="resumeFile" class="form-label fw-bold">Upload Resume (PDF)</label>
+        <input class="form-control" type="file" id="resumeFile" name="resume_file" accept=".pdf,.txt" required>
+        <div class="form-text">Accepted formats: PDF, TXT</div>
+    </div>
+
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg">Analyze Resume</button>
+    </div>
+</form>
+{% endblock %}
